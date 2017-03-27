@@ -10,7 +10,6 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
 	"encoding/json"
-	"log"
 )
 	//"crypto/md5"
 	//"crypto/rand"
