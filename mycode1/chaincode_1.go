@@ -95,10 +95,12 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 	//var stuAddress []string
 	//var address,priKey,pubKey string
 	//address,priKey,pubKey = GetAddress()
-	f, err := strconv.ParseFloat(args[2], 32)
 	fmt.Println("args[0]: " + args[0])
 	fmt.Println("args[1]: " + args[1])
 	fmt.Println("args[2]: " + args[2])
+	
+	f, err := strconv.ParseFloat(args[2], 32)
+
 	account = Account {accountNo:args[0],custName:args[1],amount:f}
 	err = writeAccount(stub,account)
 	if err != nil{
