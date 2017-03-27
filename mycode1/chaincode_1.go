@@ -32,6 +32,7 @@ func main() {
 	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
+		log.Error("Error starting Simple chaincode: %s", err)
 	}
 }
 
@@ -125,6 +126,7 @@ func writeAccount(stub shim.ChaincodeStubInterface,account Account)(error){
 		return err
 	}
 	//stub.RangeQueryState("","")
+
 	err = stub.PutState(account.accountNo,actBytes)
 	if err !=nil{
 		return errors.New("PutState Error" + err.Error())
