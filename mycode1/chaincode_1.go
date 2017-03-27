@@ -10,6 +10,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
 	"encoding/json"
+	"log"
 )
 	//"crypto/md5"
 	//"crypto/rand"
@@ -19,7 +20,7 @@ import (
 // SimpleChaincode example simple Chaincode implementation
 type SimpleChaincode struct {
 }
-
+var log=shim.NewLogger("mycode1");
 type Account struct{
 	accountNo string
 	custName string
@@ -40,7 +41,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	//if len(args) != 1 {
 	//	return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	//}
-	if function == "createAccount"{
+	log.Info("function:"+function)
+	if function == "init"{
+		return t.createAccount(stub,args)
+	}else if function == "createAccount"{
 		return t.createAccount(stub,args)
 	}
 	return nil, nil
@@ -49,12 +53,11 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 // Invoke is our entry point to invoke a chaincode function
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
-
+	log.Info("invoke function:"+function)
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
-	}
-	if function == "createAccount"{
+	}else if function == "createAccount"{
 		return t.createAccount(stub,args)
 	}
 	fmt.Println("invoke did not find func: " + function)					//error
@@ -65,7 +68,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 // Query is our entry point for queries
 func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
-
+	log.Info("query function:"+function)
 	// Handle different functions
 	if function == "dummy_query" {											//read a variable
 		fmt.Println("hi there " + function)						//error
@@ -95,7 +98,7 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 	//var stuAddress []string
 	//var address,priKey,pubKey string
 	//address,priKey,pubKey = GetAddress()
-	var log=shim.NewLogger("mycode1");
+
 	log.Info("args[0]: " + args[0])
 	log.Info("args[1]: " + args[1])
 	log.Info("args[2]: " + args[2])
