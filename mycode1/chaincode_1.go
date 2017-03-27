@@ -10,7 +10,6 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
 	"encoding/json"
-	"log"
 )
 	//"crypto/md5"
 	//"crypto/rand"
@@ -96,9 +95,10 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 	//var stuAddress []string
 	//var address,priKey,pubKey string
 	//address,priKey,pubKey = GetAddress()
-	log.Println("args[0]: " + args[0])
-	log.Println("args[1]: " + args[1])
-	log.Println("args[2]: " + args[2])
+	var log=shim.NewLogger("mycode1");
+	log.Info("args[0]: " + args[0])
+	log.Info("args[1]: " + args[1])
+	log.Info("args[2]: " + args[2])
 
 	f, err := strconv.ParseFloat(args[2], 32)
 
