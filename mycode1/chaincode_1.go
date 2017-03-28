@@ -22,9 +22,9 @@ type SimpleChaincode struct {
 var log=shim.NewLogger("mycode1");
 
 type Account struct{
-	accountNo string
-	custName string
-	amount float64
+	AccountNo string
+	CustName string
+	Amount float64
 }
 // ============================================================================================================================
 // Main
