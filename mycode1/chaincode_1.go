@@ -113,7 +113,7 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 
 	f, err := strconv.ParseFloat(args[2], 32)
 
-	account = Account {accountNo:args[0],custName:args[1],amount:f}
+	account = Account {AccountNo:args[0],CustName:args[1],Amount:f}
 	err = t.writeAccount(stub,account)
 	if err != nil{
 		return nil, errors.New("write Error" + err.Error())
@@ -136,8 +136,8 @@ func (t *SimpleChaincode) writeAccount(stub shim.ChaincodeStubInterface,account 
 
 	//stub.RangeQueryState("","")
 	log.Infof("writeAccount actBytes: %s", actBytes)
-	log.Infof("writeAccount accountNo: " + account.accountNo)
-	err = stub.PutState(account.accountNo,actBytes)
+	log.Infof("writeAccount accountNo: " + account.AccountNo)
+	err = stub.PutState(account.AccountNo,actBytes)
 	if err !=nil{
 		return errors.New("PutState Error" + err.Error())
 	}
@@ -156,6 +156,6 @@ func (t *SimpleChaincode) getAccount(stub shim.ChaincodeStubInterface,accountNo 
 	if err != nil{
 		fmt.Println("Error unmarshalling data")
 	}
-	log.Infof("getAccount accountNo: %s" , account.accountNo)
+	log.Infof("getAccount accountNo: %s" , account.AccountNo)
 	return account,actBytes,nil
 }
