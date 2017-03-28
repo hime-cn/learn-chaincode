@@ -60,7 +60,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	fmt.Println("invoke is running " + function)
 	log.Warningf("invoke function:"+function)
 	caller,_:=stub.GetCallerMetadata()
-	log.Infof("caller: %s" , caller)
+	log.Infof("Invoke caller: [%x]" , caller)
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
@@ -135,7 +135,8 @@ func (t *SimpleChaincode) writeAccount(stub shim.ChaincodeStubInterface,account 
 	}
 
 	//stub.RangeQueryState("","")
-	log.Infof("accountNo: " + account.accountNo)
+	log.Infof("writeAccount actBytes: %s", actBytes)
+	log.Infof("writeAccount accountNo: " + account.accountNo)
 	err = stub.PutState(account.accountNo,actBytes)
 	if err !=nil{
 		return errors.New("PutState Error" + err.Error())
@@ -145,16 +146,16 @@ func (t *SimpleChaincode) writeAccount(stub shim.ChaincodeStubInterface,account 
 
 func (t *SimpleChaincode) getAccount(stub shim.ChaincodeStubInterface,accountNo string)(Account,[]byte,error){
 	var account Account
-	log.Infof("accountNo: %s", accountNo)
+	log.Infof("getAccount accountNo: %s", accountNo)
 	actBytes,err := stub.GetState(accountNo)
 	if err != nil{
 		fmt.Println("Error retrieving data")
 	}
-	log.Infof("actBytes: %s", actBytes)
+	log.Infof("getAccount actBytes: %s", actBytes)
 	err = json.Unmarshal(actBytes,&account)
 	if err != nil{
 		fmt.Println("Error unmarshalling data")
 	}
-	log.Infof("accountNo: %s" , account.accountNo)
+	log.Infof("getAccount accountNo: %s" , account.accountNo)
 	return account,actBytes,nil
 }
