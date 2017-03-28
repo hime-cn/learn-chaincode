@@ -59,6 +59,8 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 	log.Warningf("invoke function:"+function)
+	caller,_:=stub.GetCallerMetadata()
+	log.Infof("caller: %s" , caller)
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
@@ -131,8 +133,7 @@ func (t *SimpleChaincode) writeAccount(stub shim.ChaincodeStubInterface,account 
 	if err != nil{
 		return err
 	}
-	caller,err:=stub.GetCallerMetadata()
-	log.Infof("caller: %s" , caller)
+
 	//stub.RangeQueryState("","")
 	log.Infof("accountNo: " + account.accountNo)
 	err = stub.PutState(account.accountNo,actBytes)
