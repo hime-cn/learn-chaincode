@@ -10,6 +10,8 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
 	"encoding/json"
+	"crypto/x509"
+	"github.com/hyperledger/fabric/core/crypto/primitives"
 )
 	//"crypto/md5"
 	//"crypto/rand"
@@ -59,18 +61,24 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 	log.Warningf("invoke function:"+function)
-	
+
 	caller,err:=stub.GetCallerMetadata()
 	if err != nil {
 		log.Warningf("Invoke GetCallerMetadata ERR: [%s]" , err.Error())
 	}
 	log.Infof("Invoke GetCallerMetadata: [%x][%s]" , caller,caller)
-	caller,err=stub.GetCallerCertificate()
+	var tcert *x509.Certificate
+	certRaw,err:=stub.GetCallerCertificate()
 	if err != nil {
 		log.Warningf("Invoke GetCallerCertificate ERR: [%s]" , err.Error())
 	}
-	log.Infof("Invoke GetCallerCertificate: [%x][%s]" , caller,caller)
+	//log.Infof("Invoke GetCallerCertificate: [%x][%s]" , caller,caller)
 
+	tcert, err = primitives.DERToX509Certificate(certRaw)
+	if err != nil {
+		log.Warningf("Invoke DERToX509Certificate ERR: [%s]" , err.Error())
+	}
+	log.Infof("Invoke GetCallerCertificate tcert: [%s][%s]" , tcert.Subject,tcert)
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
