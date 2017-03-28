@@ -59,8 +59,18 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 	log.Warningf("invoke function:"+function)
-	caller,_:=stub.GetCallerMetadata()
-	log.Infof("Invoke caller: [%x]" , caller)
+	
+	caller,err:=stub.GetCallerMetadata()
+	if err != nil {
+		log.Warningf("Invoke GetCallerMetadata ERR: [%s]" , err.Error())
+	}
+	log.Infof("Invoke GetCallerMetadata: [%x][%s]" , caller,caller)
+	caller,err=stub.GetCallerCertificate()
+	if err != nil {
+		log.Warningf("Invoke GetCallerCertificate ERR: [%s]" , err.Error())
+	}
+	log.Infof("Invoke GetCallerCertificate: [%x][%s]" , caller,caller)
+
 	// Handle different functions
 	if function == "init" {													//initialize the chaincode state, used as reset
 		return t.Init(stub, "init", args)
