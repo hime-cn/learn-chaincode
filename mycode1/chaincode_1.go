@@ -146,10 +146,11 @@ func getAccount(stub shim.ChaincodeStubInterface,accountNo string)(Account,[]byt
 	if err != nil{
 		fmt.Println("Error retrieving data")
 	}
-
+	log.Infof("actBytes: %s", actBytes)
 	err = json.Unmarshal(actBytes,&account)
 	if err != nil{
 		fmt.Println("Error unmarshalling data")
 	}
+	log.Infof("accountNo: " + account.accountNo)
 	return account,actBytes,nil
 }
