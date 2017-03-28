@@ -44,7 +44,8 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	//if len(args) != 1 {
 	//	return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	//}
-	log.SetLevel(shim.LogDebug)
+	//log.SetLevel(shim.LogDebug)
+
 	log.Warningf("function:"+function)
 	if function == "init"{
 		return t.createAccount(stub,args)
@@ -81,12 +82,13 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 		if len(args) != 1 {
 			return nil, errors.New("Incorrect number of arguments. Expecting 1")
 		}
-		_,schBytes, err := getAccount(stub,args[0])
+		log.Infof("query args:"+args[0])
+		_,actBytes, err := getAccount(stub,args[0])
 		if err != nil {
 			fmt.Println("error get Account")
 			return nil, err
 		}
-		return schBytes, nil
+		return actBytes, nil
 	}
 	fmt.Println("query did not find func: " + function)						//error
 
@@ -130,7 +132,7 @@ func writeAccount(stub shim.ChaincodeStubInterface,account Account)(error){
 		return err
 	}
 	//stub.RangeQueryState("","")
-
+	log.Infof("accountNo: " + account.accountNo)
 	err = stub.PutState(account.accountNo,actBytes)
 	if err !=nil{
 		return errors.New("PutState Error" + err.Error())
