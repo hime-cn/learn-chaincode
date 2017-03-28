@@ -83,7 +83,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 			return nil, errors.New("Incorrect number of arguments. Expecting 1")
 		}
 		log.Infof("query args:"+args[0])
-		_,actBytes, err := getAccount(stub,args[0])
+		_,actBytes, err := t.getAccount(stub,args[0])
 		if err != nil {
 			fmt.Println("error get Account")
 			return nil, err
@@ -112,7 +112,7 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 	f, err := strconv.ParseFloat(args[2], 32)
 
 	account = Account {accountNo:args[0],custName:args[1],amount:f}
-	err = writeAccount(stub,account)
+	err = t.writeAccount(stub,account)
 	if err != nil{
 		return nil, errors.New("write Error" + err.Error())
 	}
@@ -126,11 +126,13 @@ func (t *SimpleChaincode) createAccount(stub shim.ChaincodeStubInterface, args [
 	return accountBytes,nil
 }
 
-func writeAccount(stub shim.ChaincodeStubInterface,account Account)(error){
+func (t *SimpleChaincode) writeAccount(stub shim.ChaincodeStubInterface,account Account)(error){
 	actBytes ,err := json.Marshal(&account)
 	if err != nil{
 		return err
 	}
+	caller,err:=stub.GetCallerMetadata()
+	log.Infof("caller: %s" , caller)
 	//stub.RangeQueryState("","")
 	log.Infof("accountNo: " + account.accountNo)
 	err = stub.PutState(account.accountNo,actBytes)
@@ -140,8 +142,9 @@ func writeAccount(stub shim.ChaincodeStubInterface,account Account)(error){
 	return nil
 }
 
-func getAccount(stub shim.ChaincodeStubInterface,accountNo string)(Account,[]byte,error){
+func (t *SimpleChaincode) getAccount(stub shim.ChaincodeStubInterface,accountNo string)(Account,[]byte,error){
 	var account Account
+	log.Infof("accountNo: %s", accountNo)
 	actBytes,err := stub.GetState(accountNo)
 	if err != nil{
 		fmt.Println("Error retrieving data")
@@ -151,6 +154,6 @@ func getAccount(stub shim.ChaincodeStubInterface,accountNo string)(Account,[]byt
 	if err != nil{
 		fmt.Println("Error unmarshalling data")
 	}
-	log.Infof("accountNo: " + account.accountNo)
+	log.Infof("accountNo: %s" , account.accountNo)
 	return account,actBytes,nil
 }
